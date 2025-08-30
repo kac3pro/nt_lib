@@ -1,0 +1,7 @@
+add_executable(nt_test nt_test.cpp)
+add_executable(matrix_test matrix_test.cpp)
+target_link_libraries(nt_test PRIVATE GTest::gtest_main nt::nt)
+target_link_libraries(matrix_test PRIVATE GTest::gtest_main nt::nt)
+include(GoogleTest)
+gtest_discover_tests(nt_test)
+gtest_discover_tests(matrix_test)

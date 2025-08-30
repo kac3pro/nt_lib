@@ -2,79 +2,33 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug test (CMake target)",
+      "name": "Debug: Selected CMake Target",
       "type": "cppdbg",
       "request": "launch",
       "program": "${command:cmake.launchTargetPath}",
-      "args": ["--gtest_filter=${input:testFilter}"],
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        { "description": "Enable pretty-printing", "text": "-enable-pretty-printing", "ignoreFailures": true }
+      ],
+      "preLaunchTask": "cmake: build"
+    },
+
+    {
+      "name": "Debug: Run single test executable (nt_test)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/tests/nt_test/nt_test", 
+      "args": ["--gtest_filter=*"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
-      "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "CMake: build"
-    },
-
-    {
-      "name": "Debug test (explicit exe)",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test_runner",
-      "args": ["--gtest_filter=${input:testFilter}"],
-      "cwd": "${workspaceFolder}/build",
-      "stopAtEntry": false,
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "build"
-    },
-
-    {
-      "name": "Debug with ctest (follow child)",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "/usr/bin/ctest",
-      "args": ["-R", "${input:testFilter}", "-V"],
-      "cwd": "${workspaceFolder}/build",
-      "stopAtEntry": false,
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Follow forked child (ctest launches the test as a child)",
-          "text": "set follow-fork-mode child",
-          "ignoreFailures": true
-        }
-      ]
-    }
-  ],
-
-  "inputs": [
-    {
-      "id": "testFilter",
-      "type": "promptString",
-      "description": "GoogleTest filter or ctest regex (e.g. MySuite.MyTest or MySuite.*). Use * for all tests.",
-      "default": "*"
+      "preLaunchTask": "cmake: build"
     }
   ]
 }
