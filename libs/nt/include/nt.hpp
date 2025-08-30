@@ -14,13 +14,28 @@ inline T posMod(T x, T m)
     static_assert(std::is_integral_v<T>, "T must be integral");
     return (x % m + m) % m;
 }
+/**
+ * computes power modulo m using the binary algorithm. if m is 0 it just computes the power
+ */
 template <typename T>
 T fastPow(T a, T b, T m)
 {
     static_assert(std::is_integral_v<T>, "T must be integral");
     using int128_t = __int128_t;
-    a %= m;
     int128_t res = 1;
+    if (m == 0)
+    {
+        T exp = b;
+        while (exp > 0)
+        {
+            if (exp & 1)
+                res = res * a;
+            a = a * a;
+            exp >>= 1;
+        }
+        return static_cast<T>(res);
+    }
+    a %= m;
     while (b > 0)
     {
         if (b & 1)
@@ -29,6 +44,14 @@ T fastPow(T a, T b, T m)
         b >>= 1;
     }
     return res;
+}
+/**
+ * wrapper for fastPow(a, b, 0)
+ */
+template <typename T>
+T fastPow(T a, T b)
+{
+    return fastPow(a, b, static_cast<T>(0));
 }
 
 template <typename T>
@@ -170,6 +193,21 @@ bool isPrime(T x)
     return true;
 }
 
+template <typename T>
+bool isPrimePower(T n)
+{
+    static_assert(std::is_integral_v<T>, "T must be integral");
+    for (int i = 1; true; ++i)
+    {
+        T root = std::round(std::pow(n, 1.0 / i));
+        if (std::pow(root, i) == n && isPrime(root))
+            return true;
+        if (root <= 1)
+            return false;
+    }
+    assert(false);
+}
+
 std::vector<long long> factor(long long n, int seed = std::random_device()())
 {
     using int128_t = __int128_t;
@@ -230,19 +268,26 @@ std::vector<long long> factor(long long n, int seed = std::random_device()())
 }
 
 /**
- * solves a system of equations of the type x = a[i] mod m[i]
- * m[i] need to be pairwise coprime and their product must fit in T
+ * solves a system of equations of the type x = ai mod mi
+ * mi need to be pairwise coprime and their product must fit in T
  */
 template <typename T>
-std::pair<T,T> CRT(const std::vector<std::pair<T,T>> &eqs) {
-    auto helper = [](std::pair<T,T> eq1, std::pair<T,T> eq2 ) {
+std::pair<T, T> CRT(const std::vector<std::pair<T, T>> &eqs)
+{
+    static_assert(std::is_integral_v<T>, "T must be integral");
+    if (eqs.empty())
+        throw std::invalid_argument("no equations");
+    auto helper = [](std::pair<T, T> eq1, std::pair<T, T> eq2)
+    {
         const T a1 = eq1.first, a2 = eq2.first, m1 = eq1.second, m2 = eq2.second;
         const auto [s, t] = bezoutCoef(m1, m2);
-        if (s * m1 + t * m2 > 1) throw std::invalid_argument("not pairwise coprime");
+        if (s * m1 + t * m2 > 1)
+            throw std::invalid_argument("not pairwise coprime");
         const __int128_t m = static_cast<__int128_t>(m1) * m2;
         return std::make_pair(posMod(
-            posMod(posMod(static_cast<__int128_t>(a1)*t, m) * m2, m) 
-            + posMod(posMod(static_cast<__int128_t>(a2) * s, m) * m1, m), m), m);
+                                  posMod(posMod(static_cast<__int128_t>(a1) * t, m) * m2, m) 
+                                  + posMod(posMod(static_cast<__int128_t>(a2) * s, m) * m1, m), m),
+                              m);
     };
     return std::accumulate(eqs.begin() + 1, eqs.end(), eqs.front(), helper);
 }

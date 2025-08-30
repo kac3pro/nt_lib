@@ -3,6 +3,11 @@
 #include <utility>
 const int BILION = 1'000'000'000;
 const long long VERY_LARGE = static_cast<long long>(BILION) * BILION / 100;
+TEST(FastPowTest, noModulus) {
+    ASSERT_EQ(fastPow(2, 3), 8);
+    ASSERT_EQ(fastPow(10LL, 16LL), VERY_LARGE);
+    ASSERT_EQ(fastPow(10, 9), BILION);
+}
 TEST(BezoutTest, smallPositive)
 {
     int a = 12, b = 18;
@@ -115,8 +120,14 @@ TEST(InvModTest, test) {
 TEST(IsPrimeTest, test) {
     ASSERT_TRUE(isPrime(BILION+9));
     ASSERT_TRUE(isPrime(13));
-    ASSERT_TRUE(isPrime(13)*BILION);
+    ASSERT_TRUE(!isPrime(13LL*BILION));
     ASSERT_TRUE(!isPrime(static_cast<long long>(BILION+9)*(BILION+7)));
+}
+TEST(IsPrimePowerTest, test) {
+    ASSERT_TRUE(isPrimePower(BILION+9));
+    ASSERT_TRUE(isPrimePower(13*13*13));
+    ASSERT_TRUE(!isPrimePower(13LL*13*BILION));
+    ASSERT_TRUE(!isPrimePower(static_cast<long long>(BILION+9)*(BILION+7)));
 }
 TEST(FactorTest, test) {
     ASSERT_EQ(factor(120), std::vector<long long>({2,2,2,3,5}));

@@ -55,6 +55,7 @@ struct ModMatrix {
             throw std::runtime_error("rowReduce works only form prime moduli");
         
         
+        
     }
 };
 template <typename T>
