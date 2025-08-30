@@ -123,5 +123,18 @@ TEST(FactorTest, test) {
     ASSERT_EQ(factor(BILION+7), std::vector<long long>({BILION+7}));
     ASSERT_EQ(factor(static_cast<long long>(BILION+7)*(BILION+9)), std::vector<long long>({BILION+7, BILION+9}));
     ASSERT_EQ(factor(BILION+11), std::vector<long long>({3, 29, 11494253}));
-    
+}
+
+template <typename T>
+void makeCRTTest(const std::vector<std::pair<T,T>> eqs) {
+    auto [x, m] = CRT(eqs);
+    for (auto [ai, mi] : eqs) {
+        ASSERT_EQ(posMod(x, mi), posMod(ai, mi));
+    }   
+}
+TEST(CRTTest, test) {
+    std::vector<std::pair<int,int>> eqs = {{1,3}, {2,5}};
+    makeCRTTest(eqs);
+    makeCRTTest(std::vector<std::pair<long long, long long>>({{1,3}, {100, BILION+7}, {15,17}}));
+    makeCRTTest(std::vector<std::pair<long long, long long>>({{1, BILION+7}, {1,BILION+9}}));
 }

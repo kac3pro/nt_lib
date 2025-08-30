@@ -52,7 +52,7 @@ struct ModMatrix {
     
     ModMatrix<T> &rowReduce() {
         if (!isPrime(m))
-            throw std::runtime_error("rowReduce works only form prime moduli")
+            throw std::runtime_error("rowReduce works only form prime moduli");
         
         
     }

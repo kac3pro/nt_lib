@@ -229,3 +229,20 @@ std::vector<long long> factor(long long n, int seed = std::random_device()())
     return factors;
 }
 
+/**
+ * solves a system of equations of the type x = a[i] mod m[i]
+ * m[i] need to be pairwise coprime and their product must fit in T
+ */
+template <typename T>
+std::pair<T,T> CRT(const std::vector<std::pair<T,T>> &eqs) {
+    auto helper = [](std::pair<T,T> eq1, std::pair<T,T> eq2 ) {
+        const T a1 = eq1.first, a2 = eq2.first, m1 = eq1.second, m2 = eq2.second;
+        const auto [s, t] = bezoutCoef(m1, m2);
+        if (s * m1 + t * m2 > 1) throw std::invalid_argument("not pairwise coprime");
+        const __int128_t m = static_cast<__int128_t>(m1) * m2;
+        return std::make_pair(posMod(
+            posMod(posMod(static_cast<__int128_t>(a1)*t, m) * m2, m) 
+            + posMod(posMod(static_cast<__int128_t>(a2) * s, m) * m1, m), m), m);
+    };
+    return std::accumulate(eqs.begin() + 1, eqs.end(), eqs.front(), helper);
+}
