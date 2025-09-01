@@ -1,4 +1,4 @@
-project(nt VERSION 1.0.0 LANGUAGES CXX)
+project(nt VERSION 1.1.0 LANGUAGES CXX)
 
 add_library(nt INTERFACE)
 

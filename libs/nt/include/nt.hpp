@@ -266,7 +266,29 @@ std::vector<long long> factor(long long n, int seed = std::random_device()())
     std::sort(factors.begin(), factors.end());
     return factors;
 }
+/**
+ * factors n=p1^a1...pk^ak and returns {(p1,a1), ..., (pk,ak)}
+ */
+std::vector<std::pair<long long,long long>> factorMul(long long n) {
+    if (n <= 1) return {};                 // no prime factorization for n <= 1
 
+    auto f = factor(n);                    // sorted list of prime factors
+    std::vector<std::pair<long long,long long>> out;
+    if (f.empty()) return out;             // defensive: nothing to do
+
+    long long cur = f[0];
+    int cnt = 1;
+    for (std::size_t i = 1; i < f.size(); ++i) {
+        if (f[i] == cur) ++cnt;
+        else {
+            out.emplace_back(cur, cnt);
+            cur = f[i];
+            cnt = 1;
+        }
+    }
+    out.emplace_back(cur, cnt);            // last group
+    return out;
+}
 /**
  * solves a system of equations of the type x = ai mod mi
  * mi need to be pairwise coprime and their product must fit in T
@@ -290,4 +312,10 @@ std::pair<T, T> CRT(const std::vector<std::pair<T, T>> &eqs)
                               m);
     };
     return std::accumulate(eqs.begin() + 1, eqs.end(), eqs.front(), helper);
+}
+template <typename T>
+T henselLift(T n, T p, T k) {
+    if (k == 1)
+        return n;
+    else throw std::logic_error("not implemented");
 }
