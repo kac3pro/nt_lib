@@ -49,8 +49,14 @@ bool verifyRowReduced(const ModMatrix<T> &a) {
     return true;
 
 }
+ModMatrix im(5,3,3, {
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1 
+});
+
 TEST(Identity, test) {
-    ASSERT_EQ(b, ModMatrix<long long>::I(3,5));
+    ASSERT_EQ(im, ModMatrix<int>::I(3,5));
 }
 TEST(ElementaryOps, squareBracket) {
     ASSERT_EQ(a[0][0], 1);
@@ -61,7 +67,7 @@ TEST(ElementaryOps, squareBracket) {
 TEST(ElementaryOps, mulRow) {
     ASSERT_EQ(a.mulRow(2, 0)[0][0], 2);
     ASSERT_EQ(a[0][1], 4);
-    ASSERT_EQ(a[0][2], 1);
+    ASSERT_EQ(a[0][2], 6);
 }
 TEST(RowReduce, small) {
     ASSERT_TRUE(verifyRowReduced(a.rowReduce()));
@@ -71,7 +77,7 @@ TEST(RowReduce, small) {
 }
 TEST(Dot, matrix) {
     const std::vector v({1,1,1});
-    ASSERT_EQ(dot(a, std::span<const int>(v)), std::vector({1+2+3, 4+5+6, 7+8+9}));
+    ASSERT_EQ(dot(a, std::span<const int>(v)), std::vector({6, 2, 11}));
 }
 TEST (Solve, prime) {
     ModMatrix e5(2, 2,2, {1,1,2,3});
@@ -94,6 +100,12 @@ TEST (Solve, prime) {
     ASSERT_EQ(y,dot(e4,x.value()));
    
 }
+TEST (Solve, 2by1) {
+    ModMatrix e4(143, 2,1, {1, 1});
+    std::vector<int> y4({2});
+    auto x = solveSystem(e4,y4);
+    ASSERT_EQ(y4,dot(e4,x.value()));
+}
 TEST (Solve, composite) {
     ModMatrix e1(6,2,2,{1,0,0,1});
     std::vector<int> y({3,2});
@@ -103,4 +115,7 @@ TEST (Solve, composite) {
     y.assign({1,1});
     auto x2 = solveSystem(e2, y);
     ASSERT_EQ(y, dot(e2, x2.value()));
+    ModMatrix e3(1'527'955, 2,2, {1,1,1,1});
+    y.assign({1,2});
+    ASSERT_EQ(solveSystem(e3,y), std::nullopt);
 }

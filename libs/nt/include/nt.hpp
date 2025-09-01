@@ -313,6 +313,9 @@ std::pair<T, T> CRT(const std::vector<std::pair<T, T>> &eqs)
     };
     return std::accumulate(eqs.begin() + 1, eqs.end(), eqs.front(), helper);
 }
+/**
+ * lifts a solution mod p to one mod p^k using hensel's lemma
+ */
 template <typename T>
 T henselLift(T n, T p, T k) {
     if (k == 1)
