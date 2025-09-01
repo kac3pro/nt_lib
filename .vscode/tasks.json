@@ -16,7 +16,7 @@
     {
       "label": "cmake: build",
       "type": "shell",
-      "command": "cmake --build ${workspaceFolder}/build -- -j",
+      "command": "cmake --build ${workspaceFolder}/build -j",
       "group": { "kind": "build", "isDefault": true },
       "dependsOn": ["cmake: configure"]
     },
